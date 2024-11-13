@@ -6,6 +6,8 @@ let descriptionElement = document.querySelector(".description");
 let tempElement = document.querySelector(".temp");
 let dateElement = document.querySelector(".date");
 let feelsElement = document.querySelector(".feels-like");
+let image = document.querySelector(".weather-visual");
+
 
 let intervalId;
 
@@ -17,9 +19,10 @@ async function getWeather(location = "Tokyo") {
     );
     if (!response.ok) throw new Error("Network response was not ok");
     const weatherData = await response.json(); // gets all the data from URL.
-    console.log(weatherData);
 
-    weatherElement.textContent = weatherData.currentConditions.conditions;
+    const currentWeather = weatherData.currentConditions.conditions; // storing to use for image render too.
+
+    weatherElement.textContent = currentWeather;
     locationElement.textContent = weatherData.address; 
     descriptionElement.textContent = weatherData.description;
     tempElement.textContent = `Current temperature is ${weatherData.currentConditions.temp} °F`;
@@ -50,9 +53,24 @@ async function getWeather(location = "Tokyo") {
 
     feelsElement.textContent = `Feels like ${weatherData.currentConditions.feelslike} °F`;
 
+    // set image for weather
+    image.src = await getImage(currentWeather); // ??
+
   } catch (error) {
     console.error("Fetch error: ", error);
   }
+}
+
+async function getImage(currentWeather) {
+    const imageSearch = `${currentWeather.toLowerCase().replace(/\s+/g, "-'")}-weather`;
+    try {
+        const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=PdWz0zY4wcBwhe4ESkJMLjKI18TEweBH&s=${imageSearch}`, { mode: 'cors' });
+        if (!response.ok) throw new Error("Network response was not ok");
+        const imageData = await response.json();
+        return imageData.data.images.original.url;  // this is what we wnt to set as image src.
+    } catch (error) {
+        console.error("Fetch error: ", error);
+    }
 }
 
 getWeather();
