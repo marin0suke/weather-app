@@ -4,13 +4,10 @@ let weatherElement = document.querySelector(".weather"); // connect this to "sun
 let locationElement = document.querySelector(".city");
 let descriptionElement = document.querySelector(".description");
 
-async function getWeather(event) {
-  event.preventDefault();  
-  const searchInput = document.querySelector("#location").value;
-  console.log(searchInput);
+async function getWeather(location = "Tokyo") {
   try {
     const response = await fetch(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${searchInput}?key=H7EDVY9B9BDNRTN2UEGTTXJLU`,
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?key=H7EDVY9B9BDNRTN2UEGTTXJLU`,
       { mode: "cors" }
     );
     if (!response.ok) throw new Error("Network response was not ok");
@@ -23,4 +20,14 @@ async function getWeather(event) {
   }
 }
 
-document.querySelector(".check-weather-form").addEventListener("submit", getWeather);
+getWeather();
+
+document.querySelector(".check-weather-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const searchInput = document.querySelector("#location").value;
+    if (searchInput) {
+        getWeather(searchInput);
+    }
+});
+
+
