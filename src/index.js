@@ -19,11 +19,12 @@ async function getWeather(location = "Tokyo") {
     );
     if (!response.ok) throw new Error("Network response was not ok");
     const weatherData = await response.json(); // gets all the data from URL.
+    console.log(weatherData);
 
     const currentWeather = weatherData.currentConditions.conditions; // storing to use for image render too.
 
     weatherElement.textContent = currentWeather;
-    locationElement.textContent = weatherData.address; 
+    locationElement.textContent = weatherData.resolvedAddress; 
     descriptionElement.textContent = weatherData.description;
     tempElement.textContent = `Current temperature is ${weatherData.currentConditions.temp} °F`;
 
